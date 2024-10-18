@@ -1,0 +1,29 @@
+
+    CANDY CRUSH GAME : HOW TO PLAY
+
+    Once you hit the play button the game immediately begins!
+
+    At the top left of the game screen the goal displays the number of matches you must make to win the game.
+
+    At the top right of the game screen the score displays the number of matches you have currently made
+
+    Next to the score is the exit button, to win the game you must make enough matches to meet the goal before exiting.
+
+    There is no time limit so take as much time as needed.
+
+    If you no longer want to play the game, click the exit to menu button at the bottom of the screen.
+
+    Beware, if you exit before you reach the goal then you have lost the game and it will not add to your score.
+
+    Once you make enough matches to reach the goal you've won the game , yay !
+
+    You will then be prompted to play again or to exit menu.
+
+    If you would like to see the amount of games you have one so far,
+
+    select the score button on the menu. This will display your current count of previously won games.
+
+    That's all you need to know to get started, enjoy playing !
+
+
+
