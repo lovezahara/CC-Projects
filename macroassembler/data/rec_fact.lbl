@@ -1,0 +1,114 @@
+# Recursive Factorial in HMMM
+
+# The caller is required to setup the callee's stack frame. Arguments are
+# passed in the stack frame and return values are passed via register. Due
+# to the behavior of calln, the callee is required to store the instr ptr
+# immediately after being called.
+
+# Note: the stack grows from high addresses to low addresses, like our memory
+#       diagrams
+
+## Always reserved registers
+#  r15 - executing stack's base ptr
+
+## Call reserved registers
+#  r14 - instr ptr for return to caller
+
+## Return reserved registers
+#  r13 - return value
+
+## Fact() Stack Frame Offsets
+# -0 base ptr
+# -1 instr ptr
+# -2 n
+
+########### CODE STARTS HERE ###########
+### Initialize the stack ptr to the highest valid memory address (255) and start
+setn r15 127
+setn r1  2
+mul  r15 r15 r1
+addn r15 1
+jumpn :main:
+
+########### Procedures for frame maintance #########
+### Procedure for packing a fact stack frame
+### calln r12 :pack_fact_frame: immediately before calln r14 :fact_func:
+## Entry
+#  r15 - caller's base ptr
+#  r14 - caller's frame size
+#  r13 - n
+#  r12 - instruction after packing
+## Exit
+#  r15 - callee's base ptr
+:pack_fact_frame:
+## Compute callee's base ptr, store caller's base ptr, set callee base ptr
+neg r14 r14
+add r14 r14 r15
+storer r15 r14
+copy r15 r14
+## store n
+addn r15 -2
+storer r13 r15
+addn r15 2
+## return from procedure
+jumpr r12
+
+### Procedure for exiting a stack frame
+## Entry
+#  r15 - callee's base ptr
+#  r13 - callee's return value
+## Exit
+#  r15 - caller's base ptr
+#  r14 - caller's pc
+#  r13 - callee's return value
+:unpack_frame:
+## Load caller's base ptr and pc
+addn r15 -1
+loadr r14 r15
+addn r15 1
+loadr r15 r15
+## return to caller
+jumpr r14
+
+########### Fact Function #########
+:fact_func:
+## store return instr ptr in stack
+addn r15 -1
+storer r14 r15
+addn r15 1
+
+## load n into r1
+addn r15 -2
+loadr r1 r15
+addn r15 2
+
+## determine recursive vs base case
+jgtzn r1 :fact_rec:
+## Base case - return 1
+setn r13 1
+jumpn :unpack_frame:
+## Recursive case - return n * fact(n)
+:fact_rec:
+# call fact(n-1)
+copy r13 r1
+addn r13 -1
+setn r14 3
+calln r12 :pack_fact_frame:
+calln r14 :fact_func:
+# restore n to r1 and multiply by the callee's return value
+addn r15 -2
+loadr r1 r15
+addn r15 2
+mul r13 r13 r1
+jumpn :unpack_frame:
+
+########### main function ###########
+:main:
+# Get the user input
+read r13
+# Pack the initial fact stack frame and call the function
+calln r12 :pack_fact_frame:
+calln r14 :fact_func:
+# Display the answer and halt
+write r13
+halt

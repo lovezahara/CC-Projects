@@ -1,0 +1,8 @@
+
+# This is a short test program that uses a label before the label is declared
+# Target should be replaced with 1
+
+0 setn r1 10
+# :target:
+1 write r1
+2 jumpn 1 # :target:

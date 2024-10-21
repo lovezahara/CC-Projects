@@ -1,0 +1,11 @@
+# This is a short test program that uses a label before the label is declared
+# Target should be replaced with 5
+
+0 setn r1 15
+# :loopstart:
+1 jeqzn r1 5 # :target:
+2 write r1
+3 addn r1 -1
+4 jumpn 1 # :loopstart:
+# :target:
+5 halt

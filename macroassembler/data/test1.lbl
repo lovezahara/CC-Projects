@@ -1,0 +1,4 @@
+setn r1 10
+:target:
+write r1
+jumpn :target: # a comment
