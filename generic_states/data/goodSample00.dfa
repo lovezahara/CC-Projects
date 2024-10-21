@@ -1,0 +1,29 @@
+# This is a sample of a valid .dfa file
+#
+# Lines starting with '#' are comments and should be ignored
+# Lines that are blank should be ignored
+# Lines starting with 's' represent states
+# Lines starting with 't' represent transitions
+#
+# Exactly 1 state must have the 'start' attribute
+# Any number of states may be accept states
+# Two transitions from a state must not use the same symbol
+# Multiple transitions into a state may use the same symbol
+
+# This DFA accepts 'cat' or 'dog'
+
+# States
+s s0 start
+s s1
+s s2
+s s3 accept
+s s4
+s s5
+
+# Transitions
+t s0 s1 c
+t s1 s2 a
+t s2 s3 t
+t s0 s4 d
+t s4 s5 o
+t s5 s3 g

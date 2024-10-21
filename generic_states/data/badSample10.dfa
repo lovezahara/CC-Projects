@@ -1,0 +1,35 @@
+# Should be a dfa that accepts the string containing 16 '.'
+
+s s0 start
+s s16 accept
+s s13
+s s6
+s s15
+s s1
+s s14
+s s9
+s s2
+s s10
+s s8
+s s12
+s s3
+s s11
+s s5
+s s4
+
+t s15 s16 .
+t s0 s1 .
+t s12 s13 .
+t s1 s2 .
+t s4 s5 .
+t s13 s14 .
+t s6 s7 .
+t s5 s6 .
+t s14 s15 .
+t s7 s8 .
+t s8 s9 .
+t s9 s10 .
+t s10 s11 .
+t s3 s4 .
+t s11 s12 .
+t s2 s3 .

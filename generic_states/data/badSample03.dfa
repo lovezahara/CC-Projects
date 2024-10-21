@@ -1,0 +1,9 @@
+# Defective .dfa
+
+s s0 start,halt
+s s1 accept
+
+t s0 s1 0
+t s0 s1 1
+t s1 s1 0
+t s1 s1 1

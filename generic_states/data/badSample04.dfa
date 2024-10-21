@@ -1,0 +1,9 @@
+# Here's another .dfa sample...
+
+s s0 start
+s s1 accept
+s s2 start
+
+t s0 s1 1
+t s1 s2 0
+t s2 s0 1

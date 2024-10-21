@@ -1,0 +1,12 @@
+
+s cat start
+s horse accept
+
+t cat    horse a
+t    horse cat   b
+t  cat   horse c
+t    horse   cat  d
+t     horse   e
+t    cat       f
+t  horse     cat g
+t cat  horse  h

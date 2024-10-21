@@ -1,0 +1,10 @@
+# These state labels are technically ok...but potentially confusing
+
+s @!# start
+s *&
+s bob() accept
+
+t @!# bob() Y
+t @!# *&    N
+t *&  bob() N
+t *&  @!#   Y

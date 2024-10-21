@@ -1,0 +1,24 @@
+# This file is technically valid but not formatted very nicely
+
+  # This comment line starts with whitespace... it's still a valid comment line
+
+
+# State lines can also start with whitespace and contain multiple white spaces between fields
+# Also, a state named start might not be the start state
+ s   start
+
+# a state may have 0 or more attributes
+s   reject start,accept
+    s boo  accept
+ s   state
+
+# Transition lines will always have 4 parts, but the whitespace might be messed up
+# Note that state has two incoming transitions on 1 and 0, this is ok since there is only one outgoing transition
+#    for each of these symbols
+  t reject state 0
+ t  reject  state   1
+t state     start %
+t    start    boo 5
+t boo reject %
+t state state 1
+t state state 0
