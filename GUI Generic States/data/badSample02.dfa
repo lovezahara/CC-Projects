@@ -1,0 +1,12 @@
+# This .dfa is defective
+
+s s0 start
+s s1 accept
+s s2 accept # secondary accept state
+
+t s0 s1 0
+t s0 s2 1
+t s1 s0 0
+t s1 s2 1
+t s2 s1 0
+t s2 s1 1

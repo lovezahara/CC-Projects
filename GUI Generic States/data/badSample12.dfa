@@ -1,0 +1,7 @@
+
+s s0
+s s1
+s s2 accept
+
+t s0 s1 1
+t s1 s2 0

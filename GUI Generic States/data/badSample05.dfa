@@ -1,0 +1,8 @@
+
+
+s cat start
+s dog
+s cat accept
+
+t cat dog c
+t dog cat d

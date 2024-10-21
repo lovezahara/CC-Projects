@@ -1,0 +1,14 @@
+# The states don't all need to be defined before the transitions... but it's generally easier/safer to list
+# all of the states before any of the transitions
+
+s s0 start
+s s1
+t s0 s1 0
+t s1 s0 1
+s s2
+s s3 accept
+t s1 s2 0
+t s2 s2 0
+t s2 s3 1
+t s3 s3 0
+t s3 s3 1

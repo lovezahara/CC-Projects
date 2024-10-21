@@ -1,0 +1,7 @@
+
+s s0 start
+s s1 accept
+
+t s0 s1 a
+t s1 s0 b  # the b transition
+t s1 s0 a

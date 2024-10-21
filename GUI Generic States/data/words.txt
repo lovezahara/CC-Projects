@@ -1,0 +1,7 @@
+# A word file for testing statemachine.DictionaryGen during development
+catdog
+cat
+dog
+dragon
+chicken
+bunny
