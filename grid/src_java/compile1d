@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sed -i -e 's/Grid2D/Grid1D/g' FileAccess.java
+javac *.java

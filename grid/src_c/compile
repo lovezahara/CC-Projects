@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Link against grid1 source
+# ...also link the math library incase point.c from last assignment was copied
+gcc -lm copymap.c file_access.c point.c grid1.c -o copymap1
+
+# Link against grid2 source
+# ...also link the math library incase point.c from last assignment was copied
+gcc -lm copymap.c file_access.c point.c grid2.c -o copymap2
