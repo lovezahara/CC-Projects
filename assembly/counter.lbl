@@ -1,0 +1,59 @@
+ read r1
+ jeqzn r1 4 ##JUMP TO BASE CASE
+ jgtzn r1 5 ##JUMP TO IF R1>0
+ jltzn r1 12 ## JUMP TO IF R1<0
+
+##BASECASE
+# if r1 = 0
+ jeqzn r1 21 ##JUMP TO HALT
+
+##COUNTING UP
+# if r1 > 0
+##set r2 = r1 original value ex.5
+ copy r2 r1
+## set r1 = 0
+ sub r1 r1 r2
+
+## start "counting"
+ write r1
+## increment r1 to count up ex. r1 =1
+ addn r1 1
+
+##subtract r1 from original value to check if counting is finished
+ sub r3 r2 r1
+## if current count (r1) == org. value (r2) then r3 should = 0
+## and counting should stop
+ jeqzn r3 21 ##JUMP TO HALT
+
+##if difference btw r1 and r2 not 0 then counting is not finished
+ jnezn r3 7 ##JUMP TO WRITE NEXT NUMBER
+
+## COUNTING DOWN
+## if r1 <0
+##set r2 = r1 original value ex.-1
+
+copy r2 r1
+## set r1 = 0
+ sub r1 r1 r2
+
+## start "counting" from 0
+ write r1
+## decrement r1 to count down ex. r1 = -1
+ addn r1 -1
+
+##add positive r1 to original value to check if counting is finished
+ copy r4 r1
+ neg r4 r4
+ add r3 r2 r4
+## if current count (r1) == org. value (r2) then r3 should = 0
+## and counting should stop
+ jeqzn r3 21 ##JUMP TO HALT
+
+##if difference btw r1 and r2 not 0 then counting is not finished
+ jnezn r3 14 ##JUMP TO WRITE NEXT NUMBER
+
+
+write r1
+ halt
+
+          

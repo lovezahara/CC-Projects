@@ -1,0 +1,259 @@
+
+# jump to main
+0  jumpn 130 #:main:
+
+# Want a subroutine that creates a stackframe in memory for
+# the program
+# in r15 - the base address of the frame to build
+# in r14 - the address to store as the sbp
+# in r13 - the instruction pointer (which instr to go to when function returns)
+# in r12  - char i parameter
+# out r15 - the address where the new stack frame starts (same as input)
+#:mk_stack_frame:
+1  storer r14 r15
+2  addn r15 -1
+3  storer r13 r15
+4  addn r15 -1
+5  storer r12 r15
+6  addn r15 2
+
+7  jumpn 85 #:fill:
+
+## once stack is made initialize array with read
+#:init_array:
+8  read r1
+9  addn r15 1
+10  storer r1 r15
+11  setn r3 8
+12  jumpn 76 #:loop_arr:
+
+#:check:
+##char sumR1 = *(b+0) + *(b+1) + *(b+2);
+ 
+13  loadr r2 r1
+14  addn r1 1
+15  loadr r3 r1
+16  addn r1 1
+17  loadr r4 r1
+
+18  add r5 r2 r3
+19  add r5 r5 r4 ##sum of row 1 r5
+
+20  addn r1 1
+21  loadr r2 r1
+
+22  addn r1 1
+23  loadr r3 r1
+
+24  addn r1 1
+25  loadr r4 r1
+
+26  add r6 r2 r3
+27  add r6 r6 r4 ##sum of row 2 r6
+
+28  addn r1 1
+29  loadr r2 r1
+
+30  addn r1 1
+31  loadr r3 r1
+
+32  addn r1 1
+33  loadr r4 r1
+
+34  add r7 r2 r3
+35  add r7 r7 r4 ##sum of row 3 r7
+
+36  addn r1 -8
+37  loadr r2 r1
+
+38  addn r1 3
+39  loadr r3 r1
+
+40  addn r1 3
+41  loadr r4 r1
+
+42  add r8 r2 r3
+43  add r8 r8 r4 ##sum of row col 1 r8
+
+44  addn r1 -5
+45  loadr r2 r1
+
+46  addn r1 3
+47  loadr r3 r1
+
+48  addn r1 3
+49  loadr r4 r1
+
+50  add r9 r2 r3
+51  add r9 r9 r4 ##sum of row col 2 r9
+
+52  addn r1 -5
+53  loadr r2 r1
+
+54  addn r1 3
+55  loadr r3 r1
+
+56  addn r1 3
+57  loadr r4 r1
+
+58  add r10 r2 r3
+59  add r10 r10 r4 ##sum of row col 3 r10
+
+60  addn r5 -7
+61  jnezn r5 74 #:end_check:
+62  addn r6 -7
+63  jnezn r6 74 #:end_check:
+64  addn r7 -7
+65  jnezn r7 74 #:end_check:
+66  addn r8 -7
+67  jnezn r8 74 #:end_check:
+68  addn r9 -7
+69  jnezn r9 74 #:end_check:
+70  addn r10 -7
+71  jnezn r9 74 #:end_check:
+72  setn r11 1
+73  jumpn 74 #:end_check:
+
+#:end_check:
+74 addn r1 -9
+75 jumpr r13
+ 
+#:loop_arr:
+76  jeqzn r3 82 #:end_loop:
+77  read r2
+78  addn r15 1
+79  storer r2 r15
+80  addn r3 -1
+81  jgtzn r3 76 #:loop_arr:
+#:end_loop:  
+82  setn r2 0 # clear register
+83  addn r15 -9 # set back 
+84  jumpr r13
+
+#FILL
+## return value r11
+#:fill:
+85 setn r2 0
+86 copy r2 r12
+## if less than 0 then i < 8
+87 addn r2 -8
+88 jgtzn r2 109 #:base_case: #run check
+#jeqzn r2 :base_case:
+## add char i to array base/arr[0] to check correct index
+89 copy r10 r1
+90 add r10 r10 r12 #check if index not equal to zero
+91 loadr r10 r10
+92 jnezn r10 111 #:rec_fill: # if so then recursive call
+93 add r1 r1 r12 # index
+##
+94 setn r3 1
+95 storer r3 r1 # if first if false then set index = 1
+# if first if false then set index = 1
+#second if
+96 calln r13 111 #:rec_fill:
+97 jnezn r11 119 #:fill_return:
+#third if
+98 setn r3 2
+99 storer r3 r1
+100 calln r13 111 #:rec_fill:
+101 jnezn r11 119 #:fill_return:
+#fourth if
+102 setn r3 4
+103 storer r3 r1
+104 calln r13 111 #:rec_fill:
+105 jnezn r11 119 #:fill_return:
+## final part
+106  setn r3 0
+107  storer r3 r1
+108  jumpn 119 #:fill_return:
+
+
+
+
+## base case here
+#:base_case:
+109 calln r13 13 #:check:
+110 jumpn 119 #:fill_return:
+
+#recursize case here
+#:rec_fill:
+# updating for new stack
+111 copy r14 r15
+112 addn r15 -3
+
+113 setn r1 0
+114 addn r1 127
+115 addn r1 120
+#sub r1 r1 r12 # index array by r12 (i)
+
+116 addn r12 1 #add 1 to char i
+
+117 jumpn 1 #:mk_stack_frame: #make stack frame
+
+118 jumpn 119 #:fill_return:
+
+#:fill_return:
+# compute where to return to AND set r15 to the base of the caller's stackframe
+## which instruction in the caller to return to
+119 addn r15 -1
+120 loadr r13 r15
+121 addn r15 2
+122 loadr r12 r15
+123 addn r15 -1
+#reset array to base
+124 setn r1 0 
+125 addn r1 127
+126 addn r1 120
+
+127 add r1 r1 r12
+## set the stackpointer register to the caller's stackframe so that the caller's
+## offset computations (var access) works as expected
+128 loadr r15 r15
+## actually jump to the next instruction in the caller
+
+129 jumpr r13
+
+
+## main function
+#:main:
+# r15 = 246
+130  setn r15 127
+131  addn r15 119
+
+## char i to pass into fill
+132  setn r12 0
+# r14 = 0
+133  copy r14 r15
+
+# r13 = 15
+
+# this calls the subroutine that makes the stack frame, passing in the next
+#   ASM instruction as the instruction to return to when the function completes
+134  calln r13 8 #:init_array:
+135  addn r15 1
+136  copy r1 r15
+137  addn r15 -1
+138  calln r13 1 #:mk_stack_frame:
+139  jnezn r11 143 #:print_board:
+140  setn r11 -1
+141  write r11
+142  halt 
+# :print_board:
+143  setn r1 0
+144  addn r1 127
+145  addn r1 120
+146  loadr r3 r1
+147  write r3
+148  setn r4 8
+149  jumpn 150 #:loop_print:
+ 
+# :loop_print:
+150  addn r1 1
+151  loadr r3 r1
+152  write r3
+153  addn r4 -1
+154  jnezn r4 150 #:loop_print:
+155  halt
+
+## r4 keeps up with current 
+

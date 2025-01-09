@@ -1,0 +1,59 @@
+0 jumpn 1 #:main:
+
+#:main:
+## r1 keeps count
+1 setn r1 0
+2 addn r1 100
+
+## r15 will be first number entered
+# r15 = 255
+3 setn r15 127
+4 addn r15 127
+5 addn r15 1
+
+## first one stored
+6 read r2
+7 storer r2 r15
+8 jeqzn r2 12 #:end:
+9 addn r1 -1
+10 addn r5 1
+11 jumpn 13 #:add_and_store:
+
+
+#:end:
+12 halt
+
+## prompt for new number and store
+#:add_and_store:
+13 addn r15 -1
+14 read r2
+15 jeqzn r2 21 #:print:
+16 storer r2 r15
+# decreasing counter and testing
+17 addn r1 -1
+18 addn r5 1
+19 jeqzn r1 21 #:print:
+20 jumpn 13 #:add_and_store:
+
+#:print:
+#reset
+21 setn r15 0
+22 addn r15 127
+23 addn r15 127
+24 addn r15 1
+
+25 loadr r2 r15
+26 write r2
+27 addn r5 -1
+28 jeqzn r5 12 #:end:
+29 jumpn 30 #:print_loop:
+
+#:print_loop:
+30 addn r15 -1
+31 loadr r2 r15
+32 write r2
+33 addn r5 -1
+34 jeqzn r5 12 #:end:
+35 jumpn 30 #:print_loop:
+
+

@@ -1,0 +1,259 @@
+
+# jump to main
+ jumpn :main:
+
+# Want a subroutine that creates a stackframe in memory for
+# the program
+# in r15 - the base address of the frame to build
+# in r14 - the address to store as the sbp
+# in r13 - the instruction pointer (which instr to go to when function returns)
+# in r12  - char i parameter
+# out r15 - the address where the new stack frame starts (same as input)
+:mk_stack_frame:
+ storer r14 r15
+ addn r15 -1
+ storer r13 r15
+ addn r15 -1
+ storer r12 r15
+ addn r15 2
+
+ jumpn :fill:
+
+## once stack is made initialize array with read
+:init_array:
+ read r1
+ addn r15 1
+ storer r1 r15
+ setn r3 8
+ jumpn :loop_arr:
+
+:check:
+##char sumR1 = *(b+0) + *(b+1) + *(b+2);
+ 
+ loadr r2 r1
+ addn r1 1
+ loadr r3 r1
+ addn r1 1
+ loadr r4 r1
+
+ add r5 r2 r3
+ add r5 r5 r4 ##sum of row 1 r5
+
+ addn r1 1
+ loadr r2 r1
+
+ addn r1 1
+ loadr r3 r1
+
+ addn r1 1
+ loadr r4 r1
+
+ add r6 r2 r3
+ add r6 r6 r4 ##sum of row 2 r6
+
+ addn r1 1
+ loadr r2 r1
+
+ addn r1 1
+ loadr r3 r1
+
+ addn r1 1
+ loadr r4 r1
+
+ add r7 r2 r3
+ add r7 r7 r4 ##sum of row 3 r7
+
+ addn r1 -8
+ loadr r2 r1
+
+ addn r1 3
+ loadr r3 r1
+
+ addn r1 3
+ loadr r4 r1
+
+ add r8 r2 r3
+ add r8 r8 r4 ##sum of row col 1 r8
+
+ addn r1 -5
+ loadr r2 r1
+
+ addn r1 3
+ loadr r3 r1
+
+ addn r1 3
+ loadr r4 r1
+
+ add r9 r2 r3
+ add r9 r9 r4 ##sum of row col 2 r9
+
+ addn r1 -5
+ loadr r2 r1
+
+ addn r1 3
+ loadr r3 r1
+
+ addn r1 3
+ loadr r4 r1
+
+ add r10 r2 r3
+ add r10 r10 r4 ##sum of row col 3 r10
+
+ addn r5 -7
+ jnezn r5 :end_check:
+ addn r6 -7
+ jnezn r6 :end_check:
+ addn r7 -7
+ jnezn r7 :end_check:
+ addn r8 -7
+ jnezn r8 :end_check:
+ addn r9 -7
+ jnezn r9 :end_check:
+ addn r10 -7
+ jnezn r9 :end_check:
+ setn r11 1
+ jumpn :end_check:
+
+:end_check:
+addn r1 -9
+jumpr r13
+ 
+:loop_arr:
+ jeqzn r3 :end_loop:
+ read r2
+ addn r15 1
+ storer r2 r15
+ addn r3 -1
+ jgtzn r3 :loop_arr:
+:end_loop:  
+ setn r2 0 # clear register
+ addn r15 -9 # set back 
+ jumpr r13
+
+#FILL
+## return value r11
+:fill:
+setn r2 0
+copy r2 r12
+## if less than 0 then i < 8
+addn r2 -8
+jgtzn r2 :base_case: #run check
+#jeqzn r2 :base_case:
+## add char i to array base/arr[0] to check correct index
+copy r10 r1
+add r10 r10 r12 #check if index not equal to zero
+loadr r10 r10
+jnezn r10 :rec_fill: # if so then recursive call
+add r1 r1 r12 # index
+##
+setn r3 1
+storer r3 r1 # if first if false then set index = 1
+# if first if false then set index = 1
+#second if
+calln r13 :rec_fill:
+jnezn r11 :fill_return:
+#third if
+setn r3 2
+storer r3 r1
+calln r13 :rec_fill:
+jnezn r11 :fill_return:
+#fourth if
+setn r3 4
+storer r3 r1
+calln r13 :rec_fill:
+jnezn r11 :fill_return:
+## final part
+ setn r3 0
+ storer r3 r1
+ jumpn :fill_return:
+
+
+
+
+## base case here
+:base_case:
+calln r13 :check:
+jumpn :fill_return:
+
+#recursize case here
+:rec_fill:
+# updating for new stack
+copy r14 r15
+addn r15 -3
+
+setn r1 0
+addn r1 127
+addn r1 120
+#sub r1 r1 r12 # index array by r12 (i)
+
+addn r12 1 #add 1 to char i
+
+jumpn :mk_stack_frame: #make stack frame
+
+jumpn :fill_return:
+
+:fill_return:
+# compute where to return to AND set r15 to the base of the caller's stackframe
+## which instruction in the caller to return to
+addn r15 -1
+loadr r13 r15
+addn r15 2
+loadr r12 r15
+addn r15 -1
+#reset array to base
+setn r1 0 
+addn r1 127
+addn r1 120
+
+add r1 r1 r12
+## set the stackpointer register to the caller's stackframe so that the caller's
+## offset computations (var access) works as expected
+loadr r15 r15
+## actually jump to the next instruction in the caller
+
+jumpr r13
+
+
+## main function
+:main:
+# r15 = 246
+ setn r15 127
+ addn r15 119
+
+## char i to pass into fill
+ setn r12 0
+# r14 = 0
+ copy r14 r15
+
+# r13 = 15
+
+# this calls the subroutine that makes the stack frame, passing in the next
+#   ASM instruction as the instruction to return to when the function completes
+ calln r13 :init_array:
+ addn r15 1
+ copy r1 r15
+ addn r15 -1
+ calln r13 :mk_stack_frame:
+ jnezn r11 :print_board:
+ setn r11 -1
+ write r11
+ halt 
+ :print_board:
+ setn r1 0
+ addn r1 127
+ addn r1 120
+ loadr r3 r1
+ write r3
+ setn r4 8
+ jumpn :loop_print:
+ 
+ :loop_print:
+ addn r1 1
+ loadr r3 r1
+ write r3
+ addn r4 -1
+ jnezn r4 :loop_print:
+ halt
+
+## r4 keeps up with current 
+

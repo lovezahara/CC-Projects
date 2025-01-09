@@ -1,0 +1,59 @@
+jumpn :main:
+
+:main:
+## r1 keeps count
+setn r1 0
+addn r1 100
+
+## r15 will be first number entered
+# r15 = 255
+setn r15 127
+addn r15 127
+addn r15 1
+
+## first one stored
+read r2
+storer r2 r15
+jeqzn r2 :end:
+addn r1 -1
+addn r5 1
+jumpn :add_and_store:
+
+
+:end:
+halt
+
+## prompt for new number and store
+:add_and_store:
+addn r15 -1
+read r2
+jeqzn r2 :print:
+storer r2 r15
+# decreasing counter and testing
+addn r1 -1
+addn r5 1
+jeqzn r1 :print:
+jumpn :add_and_store:
+
+:print:
+#reset
+setn r15 0
+addn r15 127
+addn r15 127
+addn r15 1
+
+loadr r2 r15
+write r2
+addn r5 -1
+jeqzn r5 :end:
+jumpn :print_loop:
+
+:print_loop:
+addn r15 -1
+loadr r2 r15
+write r2
+addn r5 -1
+jeqzn r5 :end:
+jumpn :print_loop:
+
+
